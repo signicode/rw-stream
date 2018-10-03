@@ -1,12 +1,17 @@
 const {StringStream} = require("scramjet");
 const {promisify} = require("util");
 
-const {open} = require("fs").promises;
+const fs = require("fs");
+const [open, read, write] = [
+    promisify(fs. open),
+    promisify(fs. read),
+    promisify(fs.write),
+];
 
 const {Readable, Writable} = require("stream");
 
 const rw = (async (file, {readStart, writeStart} = {}) => {
-    const handle = await open(file, "r+");
+    const fd = await open(file, "r+");
     console.error(`File ${file} open`);
 
     let readIndex = +readStart || 0;
@@ -32,7 +37,7 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
     const readStream = new Readable({async read(size) {
         try {
             const ret = Buffer.alloc(size);
-            const {bytesRead} = await handle.read(ret, 0, size, readIndex);
+            const {bytesRead} = await read(fd, ret, 0, size, readIndex);
             console.error(`Read ${bytesRead} from ${readIndex}`);
             advanceReadPosition(bytesRead);
 
@@ -62,7 +67,7 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
                 try {
                     const toWrite = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding);
                     let currentIndex = 0;
-                    while (true) {
+                    while (true) { /* eslint-disable-line no-constant-condition */
                         const maxWrite = Math.min(readIndex - (writeIndex + currentIndex), toWrite.length - currentIndex);
                         if (maxWrite === 0) {
                             console.error(`Awaiting for advance of read position at ${writeIndex + currentIndex} wanting write ${toWrite}`);
@@ -71,7 +76,7 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
                             continue;
                         }
 
-                        const {bytesWritten} = await handle.write(toWrite, currentIndex, maxWrite, writeIndex + currentIndex);
+                        const {bytesWritten} = await write(fd, toWrite, currentIndex, maxWrite, writeIndex + currentIndex);
                         console.error(`Wrote ${bytesWritten} at ${writeIndex + currentIndex}`);
 
                         currentIndex += bytesWritten;
@@ -92,7 +97,7 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
     });
 
     return {
-        handle,
+        fd,
         readStream,
         writeStream
     };
