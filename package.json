@@ -8,6 +8,9 @@
   },
   "author": "Signicode <open-source@signicode.com>",
   "license": "MIT",
+  "engines": {
+    "node": ">=8.6.0"
+  },
   "devDependencies": {
     "eslint": "^5.6.1",
     "eslint-plugin-node": "^7.0.1"
