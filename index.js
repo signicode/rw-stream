@@ -9,10 +9,12 @@ const [open, close, read, write] = [
 ];
 
 const {Readable, Writable} = require("stream");
+const debug = process.env.DEBUG && process.env.DEBUG.match(/\brw-stream\b/);
+const log = (...data) => debug && console.error(...data);
 
 module.exports = (async (file, {readStart, writeStart} = {}) => {
     const fd = await open(file, "r+");
-    console.error(`File ${file} open`);
+    log(`File ${file} open`);
 
     let readIndex = +readStart || 0;
     let writeIndex = +writeStart || 0;
@@ -27,7 +29,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         } else {
             readIndex = Infinity;
         }
-        console.error(`Advance read position by ${pos}`);
+        log(`Advance read position by ${pos}`);
         lastReadPromise(pos);
     }
     advanceReadPosition(0);
@@ -38,7 +40,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         try {
             const ret = Buffer.alloc(size);
             const {bytesRead} = await read(fd, ret, 0, size, readIndex);
-            console.error(`Read ${bytesRead} from ${readIndex}`);
+            log(`Read ${bytesRead} from ${readIndex}`);
             advanceReadPosition(bytesRead);
 
             if (!bytesRead)
@@ -46,7 +48,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
 
             this.push(ret.slice(0, bytesRead));
         } catch(e) {
-            console.error(e);
+            log(e);
             this.emit("error", e);
         }
     }});
@@ -70,14 +72,14 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                     while (true) { /* eslint-disable-line no-constant-condition */
                         const maxWrite = Math.min(readIndex - (writeIndex + currentIndex), toWrite.length - currentIndex);
                         if (maxWrite === 0) {
-                            console.error(`Awaiting for advance of read position at ${writeIndex + currentIndex} wanting write ${toWrite}`);
+                            log(`Awaiting for advance of read position at ${writeIndex + currentIndex} wanting write ${toWrite}`);
 
                             if (await _readPositonUpdated === 0 && toWrite.length === currentIndex) return;
                             continue;
                         }
 
                         const {bytesWritten} = await write(fd, toWrite, currentIndex, maxWrite, writeIndex + currentIndex);
-                        console.error(`Wrote ${bytesWritten} at ${writeIndex + currentIndex}`);
+                        log(`Wrote ${bytesWritten} at ${writeIndex + currentIndex}`);
 
                         currentIndex += bytesWritten;
                         if (currentIndex === toWrite.length) break;
@@ -86,7 +88,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                     writeIndex += currentIndex;
                     callback();
                 } catch(e) {
-                    console.error(e);
+                    log(e);
                     callback(e);
                 }
             })();
