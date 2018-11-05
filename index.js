@@ -1,16 +1,16 @@
-const {StringStream} = require("scramjet");
 const {promisify} = require("util");
 
 const fs = require("fs");
-const [open, read, write] = [
+const [open, close, read, write] = [
     promisify(fs. open),
+    promisify(fs.close),
     promisify(fs. read),
     promisify(fs.write),
 ];
 
 const {Readable, Writable} = require("stream");
 
-const rw = (async (file, {readStart, writeStart} = {}) => {
+module.exports = (async (file, {readStart, writeStart} = {}) => {
     const fd = await open(file, "r+");
     console.error(`File ${file} open`);
 
@@ -92,7 +92,9 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
             })();
         },
         flush(callback) {
-            _writePromise.then(callback);
+            _writePromise
+                .then(() => close(fd))
+                .then(callback);
         }
     });
 
@@ -102,19 +104,3 @@ const rw = (async (file, {readStart, writeStart} = {}) => {
         writeStream
     };
 });
-
-(async () => {
-    const {readStream, writeStream} = await rw("test.txt");
-
-    const out = StringStream.from(readStream)
-        .lines()
-        .map(x => +x + 1)
-        .endWith("1")
-        .map(x => `${3*x}\n${x+10}\n`);
-
-    out.pipe(writeStream);
-
-    await out.whenEnd();
-    console.log("read all");
-
-})();
