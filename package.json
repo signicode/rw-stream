@@ -8,6 +8,11 @@
   },
   "author": "Signicode <open-source@signicode.com>",
   "license": "MIT",
+  "homepage": "https://github.com/signicode/rw-stream",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/signicode/rw-stream.git"
+  },
   "engines": {
     "node": ">=8.6.0"
   },
