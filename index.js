@@ -97,8 +97,15 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         },
         final(callback) {
             _writePromise
+<<<<<<< HEAD
                 .then(() => ftruncate(fd, writeIndex))
                 .then(() => close(fd))
+=======
+                .then(() => { 
+					fs.truncate(fd, writeIndex);
+					close(fd);
+				})
+>>>>>>> d8a86be... Truncate file descriptor before closing
                 .then(callback);
         }
     });
