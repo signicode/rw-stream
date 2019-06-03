@@ -95,7 +95,10 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         },
         flush(callback) {
             _writePromise
-                .then(() => close(fd))
+                .then(() => { 
+					fs.truncate(fd, writeIndex);
+					close(fd);
+				})
                 .then(callback);
         }
     });
