@@ -86,6 +86,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                     }
 
                     writeIndex += currentIndex;
+					
                     callback();
                 } catch(e) {
                     log(e);
@@ -95,14 +96,18 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         },
         flush(callback) {
             _writePromise
-                .then(() => { 
-					fs.truncate(fd, writeIndex);
-					close(fd);
-				})
+                .then(() => close(fd))
                 .then(callback);
         }
     });
 
+	
+	//Truncate the file up to where the write ends, otherwise
+	//some of the original content will remain in place
+	writeStream.on('finish', () => {
+		if( writeIndex > 0) fs.ftruncateSync(fd, writeIndex);
+	})
+	
     return {
         fd,
         readStream,
