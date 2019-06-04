@@ -1,11 +1,12 @@
 const {promisify} = require("util");
 
 const fs = require("fs");
-const [open, close, read, write] = [
-    promisify(fs. open),
-    promisify(fs.close),
-    promisify(fs. read),
-    promisify(fs.write),
+const [open, close, read, write, ftruncate] = [
+    promisify(fs.     open),
+    promisify(fs.    close),
+    promisify(fs.     read),
+    promisify(fs.    write),
+    promisify(fs.ftruncate),
 ];
 
 const {Readable, Writable} = require("stream");
@@ -95,6 +96,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         },
         flush(callback) {
             _writePromise
+                .then(() => ftruncate(fd, writeIndex))
                 .then(() => close(fd))
                 .then(callback);
         }
