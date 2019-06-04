@@ -87,6 +87,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                     }
 
                     writeIndex += currentIndex;
+					
                     callback();
                 } catch(e) {
                     log(e);
@@ -94,14 +95,14 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                 }
             })();
         },
-        flush(callback) {
+        final(callback) {
             _writePromise
                 .then(() => ftruncate(fd, writeIndex))
                 .then(() => close(fd))
                 .then(callback);
         }
     });
-
+	
     return {
         fd,
         readStream,
