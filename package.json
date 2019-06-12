@@ -29,8 +29,8 @@
   ],
   "devDependencies": {
     "eslint": "^5.16.0",
-    "eslint-plugin-node": "^7.0.1",
-    "scramjet": "^4.18.14"
+    "eslint-plugin-node": "^9.1.0",
+    "scramjet": "^4.25.1"
   },
   "dependencies": {}
 }
