@@ -47,7 +47,12 @@ const replaceAndBackup = async (newContentStream) => {
 For now there's just:
 
 ```bash
-$ node test/grow.js
+$ node test
 ```
+
+Two tests will be executed:
+
+* one for file that's being grown.
+* one for file that's being shrinked.
 
 We're working on more and proper tests.
