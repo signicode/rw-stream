@@ -1,22 +1,3 @@
 {
-    "plugins": ["node"],
-    "extends": ["eslint:recommended", "plugin:node/recommended"],
-    "rules": {
-        "node/exports-style": ["error", "module.exports"],
-        "quotes": ["error", "double"],
-        "semi": [2, "always"],
-        "linebreak-style": ["error", "unix"],
-        "eol-last": 2,
-        "indent": ["error", 4, {"SwitchCase": 1}],
-        "no-extra-semi": 2,
-        "no-console": 0,
-        "no-process-exit": 0,
-        "node/shebang": 0,
-        "object-curly-spacing": "warn",
-        "semi-spacing": [2, { "before": false, "after": true }]
-    },
-    "env": {
-        "node": true
-    },
-    "root": true
+    "extends": ["scramjet"]
 }
