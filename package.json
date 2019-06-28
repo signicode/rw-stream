@@ -1,6 +1,6 @@
 {
   "name": "rw-stream",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A simple stream that allows reading and writing to the same file at the same time.\u001b[H\u001b[C\u001b[F",
   "main": "index.js",
   "scripts": {
