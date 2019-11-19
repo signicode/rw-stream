@@ -28,9 +28,9 @@
     "pipe"
   ],
   "devDependencies": {
-    "eslint": "^6.1.0",
-    "eslint-config-scramjet": "^2.0.0",
-    "scramjet": "^4.25.5"
+    "eslint": "^6.6.0",
+    "eslint-config-scramjet": "^2.0.1",
+    "scramjet": "^4.27.2"
   },
   "dependencies": {}
 }
