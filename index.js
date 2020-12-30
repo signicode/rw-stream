@@ -54,7 +54,12 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         }
     }});
 
-    let _writePromise;
+    let _writePromise = {
+      then (func) {
+        func();
+        return this;
+      }
+    };
     const writeStream = new Writable({
         writev(chunks, callback) {
             return this._write(
