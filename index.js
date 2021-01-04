@@ -50,7 +50,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
             this.push(ret.slice(0, bytesRead));
         } catch(e) {
             log(e);
-            this.emit("error", e);
+            this.destroy(e);
         }
     }});
 

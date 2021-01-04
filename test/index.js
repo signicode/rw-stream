@@ -6,6 +6,7 @@ const assert = require("assert");
     await require("./case/grow")(assert);
     await require("./case/contract")(assert);
     await require("./case/empty")(assert);
+    await require("./case/error")(assert);
     console.log("Tests done");
 })().catch(e => {
     console.error(e.stack);
