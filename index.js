@@ -33,7 +33,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         log(`Advance read position by ${pos}`);
         lastReadPromise(pos);
     }
-    advanceReadPosition(0);
+    // advanceReadPosition(0);
 
     if (readStart < writeStart) throw new Error("Read index MUST come before write index.");
 
