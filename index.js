@@ -66,7 +66,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
                 Buffer.concat(
                     chunks.map(({chunk, encoding}) => Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding))
                 ),
-                "binary",
+                null,
                 callback
             );
         },
