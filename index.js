@@ -33,7 +33,7 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
         log(`Advance read position by ${pos}`);
         lastReadPromise(pos);
     }
-    advanceReadPosition(0);
+    // advanceReadPosition(0);
 
     if (readStart < writeStart) throw new Error("Read index MUST come before write index.");
 
@@ -50,18 +50,23 @@ module.exports = (async (file, {readStart, writeStart} = {}) => {
             this.push(ret.slice(0, bytesRead));
         } catch(e) {
             log(e);
-            this.emit("error", e);
+            this.destroy(e);
         }
     }});
 
-    let _writePromise;
+    let _writePromise = {
+      then (func) {
+        func();
+        return this;
+      }
+    };
     const writeStream = new Writable({
         writev(chunks, callback) {
             return this._write(
                 Buffer.concat(
                     chunks.map(({chunk, encoding}) => Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding))
                 ),
-                "binary",
+                null,
                 callback
             );
         },
